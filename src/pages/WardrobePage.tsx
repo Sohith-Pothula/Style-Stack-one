@@ -14,7 +14,8 @@ import {
   Shirt,
   Search,
   Filter,
-  Palette
+  Palette,
+  PackageOpen
 } from 'lucide-react';
 
 const clothingTypes: { value: ClothingType; label: string; emoji: string }[] = [
@@ -184,50 +185,53 @@ export const WardrobePage = () => {
   const canSaveCurrentItem = currentItem?.name && currentItem?.type && currentItem?.color;
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-28 relative">
+      {/* Background Decor */}
+      <div className="fixed top-0 left-0 w-full h-80 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
+
       {/* Header */}
-      <div className="px-6 pt-12 pb-4">
-        <h1 className="text-3xl font-bold mb-1">
-          <span className="gradient-text">Wardrobe</span>
+      <div className="px-6 pt-12 pb-6 relative z-10">
+        <h1 className="text-3xl font-extrabold tracking-tight mb-2">
+          Your <span className="gradient-text">Wardrobe</span>
         </h1>
-        <p className="text-muted-foreground">
-          {wardrobe.length} items in your closet
+        <p className="text-muted-foreground font-medium">
+          Manage your digital closet ({wardrobe.length} items)
         </p>
       </div>
 
       {/* Search */}
-      <div className="px-6 mb-4">
-        <div className="relative">
+      <div className="px-6 mb-6 relative z-10 sticky top-0 bg-background/80 backdrop-blur-md py-4 -my-4 transition-all">
+        <div className="relative shadow-lg rounded-2xl">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search items..."
-            className="w-full h-12 pl-12 pr-4 rounded-xl bg-secondary border border-border focus:border-primary outline-none transition-all text-foreground placeholder:text-muted-foreground"
+            placeholder="Search clothes..."
+            className="w-full h-14 pl-12 pr-4 rounded-2xl bg-card/80 border border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-foreground placeholder:text-muted-foreground/70"
           />
         </div>
       </div>
 
       {/* Filters */}
-      <div className="px-6 mb-6">
+      <div className="px-6 mb-8 relative z-10">
         <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-6 px-6 pb-2">
           <button
             onClick={() => setActiveFilter('all')}
-            className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${activeFilter === 'all'
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-secondary text-muted-foreground hover:text-foreground'
+            className={`flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-sm ${activeFilter === 'all'
+              ? 'bg-gradient-to-r from-primary to-accent text-white shadow-glow'
+              : 'bg-secondary text-muted-foreground hover:bg-secondary/80 hover:text-foreground'
               }`}
           >
-            All
+            All Items
           </button>
           {clothingTypes.map((type) => (
             <button
               key={type.value}
               onClick={() => setActiveFilter(type.value)}
-              className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-1 ${activeFilter === type.value
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-secondary text-muted-foreground hover:text-foreground'
+              className={`flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-semibold transition-all flex items-center gap-2 shadow-sm ${activeFilter === type.value
+                ? 'bg-gradient-to-r from-primary to-accent text-white shadow-glow'
+                : 'bg-secondary text-muted-foreground hover:bg-secondary/80 hover:text-foreground'
                 }`}
             >
               <span>{type.emoji}</span>
@@ -238,57 +242,72 @@ export const WardrobePage = () => {
       </div>
 
       {/* Grid */}
-      <div className="px-6">
+      <div className="px-6 relative z-10">
         {filteredWardrobe.length === 0 ? (
-          <div className="glass-card p-8 text-center rounded-2xl">
-            <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center mx-auto mb-4">
-              <Shirt className="w-8 h-8 text-muted-foreground" />
+          <div className="glass-card p-10 text-center rounded-3xl border-dashed border-2 border-border/50 flex flex-col items-center">
+            <div className="w-20 h-20 rounded-full bg-secondary flex items-center justify-center mb-6 animate-pulse-glow">
+              {wardrobe.length === 0 ? (
+                <PackageOpen className="w-10 h-10 text-primary" />
+              ) : (
+                <Search className="w-10 h-10 text-muted-foreground" />
+              )}
             </div>
-            <h4 className="font-semibold mb-2">
-              {wardrobe.length === 0 ? 'Start building your wardrobe' : 'No items found'}
+            <h4 className="text-xl font-bold mb-2">
+              {wardrobe.length === 0 ? 'Closet Empty' : 'No items found'}
             </h4>
-            <p className="text-muted-foreground text-sm mb-4">
+            <p className="text-muted-foreground mb-6 max-w-xs mx-auto">
               {wardrobe.length === 0
-                ? 'Add your first clothing item to get started'
-                : 'Try adjusting your search or filter'
+                ? 'Upload photos of your clothes to start generating outfits.'
+                : 'Try clearing your search filters to see more things.'
               }
             </p>
+            {wardrobe.length === 0 && (
+              <Button onClick={() => setShowAddModal(true)} variant="gradient" className="shadow-glow">
+                Add Items Now
+              </Button>
+            )}
           </div>
         ) : (
           <motion.div
             layout
-            className="grid grid-cols-2 gap-4"
+            className="grid grid-cols-2 gap-4 pb-20"
           >
-            <AnimatePresence>
+            <AnimatePresence mode="popLayout">
               {filteredWardrobe.map((item) => (
                 <motion.div
                   key={item.id}
                   layout
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  className="glass-card rounded-2xl overflow-hidden group"
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ type: 'spring', damping: 20 }}
+                  className="glass-card rounded-2xl overflow-hidden group hover:shadow-glow transition-all duration-300 border-border/50"
                 >
-                  <div className="aspect-square relative">
+                  <div className="aspect-[4/5] relative overflow-hidden bg-secondary/50">
                     <img
                       src={item.imageUrl}
                       alt={item.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
-                    <button
-                      onClick={() => removeClothingItem(item.id)}
-                      className="absolute top-2 right-2 w-8 h-8 rounded-full bg-destructive/80 text-destructive-foreground opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-start justify-end p-2">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); removeClothingItem(item.id); }}
+                        className="w-8 h-8 rounded-full bg-destructive/90 text-white flex items-center justify-center hover:scale-110 transition-transform"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                    {/* Color dot */}
                     <div
-                      className="absolute bottom-2 left-2 w-6 h-6 rounded-full border-2 border-background"
+                      className="absolute bottom-2 left-2 w-5 h-5 rounded-full border border-white/20 shadow-sm ring-1 ring-black/10"
                       style={{ backgroundColor: item.color }}
                     />
                   </div>
-                  <div className="p-3">
-                    <h4 className="font-medium text-sm truncate">{item.name}</h4>
-                    <p className="text-xs text-muted-foreground capitalize">{item.type}</p>
+                  <div className="p-3 bg-card/50 backdrop-blur-sm">
+                    <h4 className="font-semibold text-sm truncate">{item.name}</h4>
+                    <p className="text-xs text-muted-foreground capitalize flex items-center gap-1 mt-1">
+                      {clothingTypes.find(t => t.value === item.type)?.emoji} {item.type}
+                    </p>
                   </div>
                 </motion.div>
               ))}
@@ -297,24 +316,24 @@ export const WardrobePage = () => {
         )}
       </div>
 
-      {/* FAB */}
+      {/* Floating Action Button */}
       <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
         onClick={() => setShowAddModal(true)}
-        className="fixed bottom-24 right-6 w-14 h-14 rounded-full bg-gradient-to-r from-primary to-accent shadow-glow flex items-center justify-center z-40"
+        className="fixed bottom-24 right-6 w-16 h-16 rounded-full bg-gradient-to-r from-primary to-accent shadow-glow flex items-center justify-center z-40 border-4 border-background"
       >
-        <Plus className="w-6 h-6 text-primary-foreground" />
+        <Plus className="w-8 h-8 text-primary-foreground" />
       </motion.button>
 
-      {/* Add Modal */}
+      {/* Add Item Modal */}
       <AnimatePresence>
         {showAddModal && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-end"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center sm:justify-center p-0 sm:p-4"
             onClick={handleCloseModal}
           >
             <motion.div
@@ -323,18 +342,20 @@ export const WardrobePage = () => {
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full bg-card rounded-t-3xl p-6 pb-24 max-h-[90vh] overflow-y-auto"
+              className="w-full bg-card rounded-t-3xl sm:rounded-3xl p-6 pb-12 sm:pb-6 max-h-[90vh] overflow-y-auto relative gradient-border-container ring-1 ring-white/10"
             >
-              <div className="w-12 h-1 bg-muted rounded-full mx-auto mb-6" />
+              <div className="w-12 h-1.5 bg-muted rounded-full mx-auto mb-8 sm:hidden" />
 
               {!isEditingMode ? (
                 <>
-                  {/* Photo Selection Mode */}
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-bold">Select Photos</h2>
-                    <span className="text-sm text-muted-foreground">
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h2 className="text-2xl font-bold">Add Clothes</h2>
+                      <p className="text-muted-foreground text-sm">Fill your digital closet</p>
+                    </div>
+                    <div className="bg-secondary px-3 py-1 rounded-full text-xs font-medium">
                       {uploadedImages.length}/{MAX_PHOTOS}
-                    </span>
+                    </div>
                   </div>
 
                   <input
@@ -346,27 +367,25 @@ export const WardrobePage = () => {
                     className="hidden"
                   />
 
-                  {/* Upload Button */}
                   {uploadedImages.length < MAX_PHOTOS && (
                     <button
                       onClick={() => fileInputRef.current?.click()}
-                      className="w-full flex items-center justify-center gap-3 p-4 mb-4 rounded-2xl bg-secondary border-2 border-dashed border-border hover:border-primary/50 transition-all"
+                      className="w-full flex flex-col items-center justify-center gap-3 p-8 mb-6 rounded-2xl bg-secondary/30 border-2 border-dashed border-border hover:border-primary/50 hover:bg-secondary/50 transition-all group"
                     >
-                      <div className="flex items-center gap-2">
-                        <Camera className="w-5 h-5 text-muted-foreground" />
-                        <ImageIcon className="w-5 h-5 text-muted-foreground" />
+                      <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm">
+                        <Camera className="w-8 h-8 text-muted-foreground group-hover:text-primary transition-colors" />
                       </div>
-                      <span className="text-sm text-muted-foreground">
-                        Tap to add up to {MAX_PHOTOS - uploadedImages.length} more photos
-                      </span>
+                      <div className="text-center">
+                        <span className="text-sm font-semibold block text-foreground">Tap to upload photos</span>
+                        <span className="text-xs text-muted-foreground">Support JPG, PNG</span>
+                      </div>
                     </button>
                   )}
 
-                  {/* Selected Photos Grid */}
                   {uploadedImages.length > 0 && (
-                    <div className="grid grid-cols-3 gap-3 mb-6">
+                    <div className="grid grid-cols-3 gap-3 mb-8">
                       {uploadedImages.map((imageUrl, index) => (
-                        <div key={index} className="relative aspect-square rounded-xl overflow-hidden">
+                        <div key={index} className="relative aspect-square rounded-xl overflow-hidden group bg-secondary">
                           <img
                             src={imageUrl}
                             alt={`Upload ${index + 1}`}
@@ -374,24 +393,20 @@ export const WardrobePage = () => {
                           />
                           <button
                             onClick={() => removeUploadedImage(index)}
-                            className="absolute top-1 right-1 w-6 h-6 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center"
+                            className="absolute top-1 right-1 w-6 h-6 rounded-full bg-black/50 text-white backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                           >
                             <X className="w-3 h-3" />
                           </button>
-                          <div className="absolute bottom-1 left-1 w-5 h-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-medium">
-                            {index + 1}
-                          </div>
                         </div>
                       ))}
                     </div>
                   )}
 
-                  {/* Action Buttons */}
-                  <div className="flex gap-3">
+                  <div className="flex gap-3 mt-auto">
                     <Button
                       variant="outline"
                       size="lg"
-                      className="flex-1"
+                      className="flex-1 rounded-xl h-12"
                       onClick={handleCloseModal}
                     >
                       Cancel
@@ -399,170 +414,145 @@ export const WardrobePage = () => {
                     <Button
                       variant="gradient"
                       size="lg"
-                      className="flex-1"
+                      className="flex-[2] rounded-xl h-12 shadow-glow"
                       onClick={startEditingItems}
                       disabled={!canProceedToEdit}
                     >
-                      Continue ({uploadedImages.length})
+                      Continue
                     </Button>
                   </div>
                 </>
               ) : (
                 <>
-                  {/* Item Editing Mode */}
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-bold">
-                      Item {currentEditIndex + 1} of {bulkItems.length}
-                    </h2>
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h2 className="text-xl font-bold">Edit Details</h2>
+                      <p className="text-xs text-muted-foreground">Item {currentEditIndex + 1} of {bulkItems.length}</p>
+                    </div>
+
                     <div className="flex gap-1">
                       {bulkItems.map((item, index) => (
-                        <button
+                        <div
                           key={index}
-                          onClick={() => setCurrentEditIndex(index)}
-                          className={`w-8 h-8 rounded-full overflow-hidden border-2 transition-all ${index === currentEditIndex
-                              ? 'border-primary scale-110'
-                              : item.name && item.type && item.color
-                                ? 'border-accent'
-                                : 'border-border opacity-50'
-                            }`}
-                        >
-                          <img
-                            src={item.imageUrl}
-                            alt={`Item ${index + 1}`}
-                            className="w-full h-full object-cover"
+                          className={`w-2 h-2 rounded-full transition-all ${index === currentEditIndex ? 'bg-primary w-4' : 'bg-muted'}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex gap-6 mb-6">
+                    <div className="w-1/3 flex-shrink-0">
+                      <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-secondary border border-border sticky top-0">
+                        <img
+                          src={currentItem?.imageUrl}
+                          alt="Current item"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex-1 space-y-5 overflow-y-auto max-h-[60vh] pr-1">
+                      {/* Name */}
+                      <div>
+                        <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2 block">Name</label>
+                        <input
+                          type="text"
+                          value={currentItem?.name || ''}
+                          onChange={(e) => updateCurrentItem('name', e.target.value)}
+                          placeholder="e.g. Vintage Denim Jacket"
+                          className="w-full h-12 px-4 rounded-xl bg-secondary/50 border border-border focus:border-primary focus:bg-secondary outline-none transition-all text-foreground"
+                          autoFocus
+                        />
+                      </div>
+
+                      {/* Type */}
+                      <div>
+                        <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2 block">Category</label>
+                        <div className="grid grid-cols-2 gap-2">
+                          {clothingTypes.map((type) => (
+                            <button
+                              key={type.value}
+                              onClick={() => updateCurrentItem('type', type.value)}
+                              className={`p-2 rounded-lg border transition-all flex items-center gap-2 ${currentItem?.type === type.value
+                                ? 'border-primary bg-primary/10 text-primary'
+                                : 'border-border bg-secondary/30 hover:border-primary/50'
+                                }`}
+                            >
+                              <span className="text-lg">{type.emoji}</span>
+                              <span className="text-sm font-medium">{type.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Color */}
+                      <div>
+                        <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2 block">Color</label>
+                        <div className="flex items-center gap-3 p-3 rounded-xl border border-border bg-secondary/30">
+                          <div
+                            className="w-10 h-10 rounded-full border-2 border-white/20 shadow-sm cursor-pointer"
+                            style={{ backgroundColor: currentItem?.color }}
+                            onClick={() => setShowColorPicker(true)}
                           />
-                        </button>
-                      ))}
+                          <div className="flex-1">
+                            <p className="text-sm font-semibold">{currentItem?.color}</p>
+                            <p className="text-xs text-muted-foreground">Tap circle to change</p>
+                          </div>
+                          <Button size="sm" variant="outline" onClick={() => setShowColorPicker(true)}>
+                            <Palette className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Occasions */}
+                      <div>
+                        <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2 block">Occasions</label>
+                        <div className="flex gap-2 flex-wrap">
+                          {occasions.map((occasion) => (
+                            <button
+                              key={occasion.value}
+                              onClick={() => toggleOccasion(occasion.value)}
+                              className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all border ${currentItem?.occasions.includes(occasion.value)
+                                ? 'bg-primary border-primary text-white'
+                                : 'bg-transparent border-border text-muted-foreground hover:border-primary/50'
+                                }`}
+                            >
+                              {occasion.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Seasons */}
+                      <div>
+                        <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2 block">Seasons</label>
+                        <div className="flex gap-2 flex-wrap">
+                          {seasons.map((season) => (
+                            <button
+                              key={season.value}
+                              onClick={() => toggleSeason(season.value)}
+                              className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all border ${currentItem?.season.includes(season.value)
+                                ? 'bg-accent border-accent text-white'
+                                : 'bg-transparent border-border text-muted-foreground hover:border-accent/50'
+                                }`}
+                            >
+                              {season.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Current Image Preview */}
-                  <div className="relative aspect-square rounded-2xl overflow-hidden max-w-[150px] mx-auto mb-4">
-                    <img
-                      src={currentItem?.imageUrl}
-                      alt="Current item"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-
-                  {/* Name */}
-                  <div className="mb-4">
-                    <label className="text-sm font-medium text-muted-foreground mb-2 block">Name *</label>
-                    <input
-                      type="text"
-                      value={currentItem?.name || ''}
-                      onChange={(e) => updateCurrentItem('name', e.target.value)}
-                      placeholder="e.g., Blue Denim Jacket"
-                      className="w-full h-12 px-4 rounded-xl bg-secondary border border-border focus:border-primary outline-none transition-all text-foreground placeholder:text-muted-foreground"
-                    />
-                  </div>
-
-                  {/* Type */}
-                  <div className="mb-4">
-                    <label className="text-sm font-medium text-muted-foreground mb-2 block">Type *</label>
-                    <div className="grid grid-cols-4 gap-2">
-                      {clothingTypes.map((type) => (
-                        <button
-                          key={type.value}
-                          onClick={() => updateCurrentItem('type', type.value)}
-                          className={`p-3 rounded-xl border-2 transition-all text-center ${currentItem?.type === type.value
-                              ? 'border-primary bg-primary/10'
-                              : 'border-border bg-secondary'
-                            }`}
-                        >
-                          <span className="text-xl block">{type.emoji}</span>
-                          <span className="text-xs">{type.label}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Color */}
-                  <div className="mb-4">
-                    <label className="text-sm font-medium text-muted-foreground mb-2 block">Color *</label>
-                    <div className="flex gap-4 items-center">
-                      <div
-                        className="w-16 h-16 rounded-full border-4 border-secondary shadow-lg transition-all hover:scale-105 cursor-pointer"
-                        style={{ backgroundColor: currentItem?.color || '#000000' }}
-                        onClick={() => setShowColorPicker(true)}
-                      />
-                      <Button
-                        variant="outline"
-                        onClick={() => setShowColorPicker(true)}
-                        className="gap-2"
-                      >
-                        <Palette className="w-4 h-4" />
-                        {currentItem?.color || 'Select Color'}
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Fit */}
-                  <div className="mb-4">
-                    <label className="text-sm font-medium text-muted-foreground mb-2 block">Fit</label>
-                    <div className="flex gap-2">
-                      {(['oversized', 'regular', 'fitted'] as const).map((fit) => (
-                        <button
-                          key={fit}
-                          onClick={() => updateCurrentItem('fit', fit)}
-                          className={`flex-1 py-3 rounded-xl border-2 capitalize transition-all ${currentItem?.fit === fit
-                              ? 'border-primary bg-primary/10'
-                              : 'border-border bg-secondary'
-                            }`}
-                        >
-                          {fit}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Occasions */}
-                  <div className="mb-4">
-                    <label className="text-sm font-medium text-muted-foreground mb-2 block">Occasions</label>
-                    <div className="flex gap-2 flex-wrap">
-                      {occasions.map((occasion) => (
-                        <button
-                          key={occasion.value}
-                          onClick={() => toggleOccasion(occasion.value)}
-                          className={`px-4 py-2 rounded-full text-sm transition-all ${currentItem?.occasions.includes(occasion.value)
-                              ? 'bg-primary text-primary-foreground'
-                              : 'bg-secondary text-muted-foreground'
-                            }`}
-                        >
-                          {occasion.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Seasons */}
-                  <div className="mb-6">
-                    <label className="text-sm font-medium text-muted-foreground mb-2 block">Seasons</label>
-                    <div className="flex gap-2 flex-wrap">
-                      {seasons.map((season) => (
-                        <button
-                          key={season.value}
-                          onClick={() => toggleSeason(season.value)}
-                          className={`px-4 py-2 rounded-full text-sm transition-all ${currentItem?.season.includes(season.value)
-                              ? 'bg-primary text-primary-foreground'
-                              : 'bg-secondary text-muted-foreground'
-                            }`}
-                        >
-                          {season.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Navigation & Save */}
-                  <div className="flex gap-3">
+                  <div className="flex gap-3 pt-4 border-t border-border mt-auto">
                     {currentEditIndex > 0 && (
                       <Button
                         variant="outline"
                         size="lg"
                         onClick={() => setCurrentEditIndex(currentEditIndex - 1)}
+                        className="rounded-xl h-12"
                       >
-                        Prev
+                        Back
                       </Button>
                     )}
 
@@ -570,7 +560,7 @@ export const WardrobePage = () => {
                       <Button
                         variant="gradient"
                         size="lg"
-                        className="flex-1"
+                        className="flex-1 rounded-xl h-12 shadow-glow"
                         onClick={() => setCurrentEditIndex(currentEditIndex + 1)}
                         disabled={!canSaveCurrentItem}
                       >
@@ -580,7 +570,7 @@ export const WardrobePage = () => {
                       <Button
                         variant="gradient"
                         size="lg"
-                        className="flex-1"
+                        className="flex-1 rounded-xl h-12 shadow-glow"
                         onClick={handleSaveAll}
                         disabled={!bulkItems.every(item => item.name && item.type && item.color)}
                       >

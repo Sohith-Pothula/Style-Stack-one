@@ -12,11 +12,26 @@ import { StylePage } from "@/pages/StylePage";
 import { InsightsPage } from "@/pages/InsightsPage";
 import { ProfilePage } from "@/pages/ProfilePage";
 import NotFound from "./pages/NotFound";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 
 const AppContent = () => {
-  const { isOnboarded } = useStore();
+  const { isOnboarded, theme } = useStore();
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.remove('light', 'dark');
+
+    if (theme === 'system') {
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light';
+      root.classList.add(systemTheme);
+    } else {
+      root.classList.add(theme);
+    }
+  }, [theme]);
 
   if (!isOnboarded) {
     return <Onboarding />;

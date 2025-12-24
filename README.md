@@ -1,75 +1,36 @@
 # 🧍‍♂️ Style Stack
+> **Your Personal AI-Powered Digital Wardrobe Stylist**
 
-Style Stack is a personal AI-powered fashion stylist that helps users create better outfit combinations using their existing wardrobe, skin tone, and preferences.
+Style Stack is a production-ready, AI-powered fashion stylist application that helps young people organize their wardrobe, get personalized outfit recommendations, and discover their unique style identity.
 
----
-
-## ✨ Features Overview
-
-- Personalized outfit recommendations  
-- Skin tone–based color matching  
-- Visual wardrobe management  
-- Clean, responsive UI  
-- Future-ready AI styling foundation  
+Built with a **Gen-Z friendly** aesthetic, it features a premium, dual-theme UI (Dark/Light) that adapts to your environment while making your clothes look their best.
 
 ---
 
-## 📱 App Screens & Features
+## ✨ Key Features
 
-### 1️⃣ Start Screen
-- Clean and simple start screen  
-- User-friendly flow designed for first-time users  
-
-<img width="1366" height="679" alt="Start Screen" src="https://github.com/user-attachments/assets/ea87a9ba-63ea-400e-9a65-b954e8cf24f0" />
-
----
-
-### 2️⃣ Skin Tone Selection
-- Personalized styling based on your skin tone  
-- Helps choose colors that actually suit you  
-
-<img width="1366" height="679" alt="Skin Tone Selection" src="https://github.com/user-attachments/assets/8bf2c821-d8e1-4e4a-994a-88186302388a" />
+- **🌓 Premium Dual-Theme UI**: Seamlessly switches between a stunning Neon Dark Mode and a clean, professional Light Mode.
+- **🧚‍♂️ AI-Powered Styling**: Smart outfit generation based on occasion, mood, weather, and your specific wardrobe items.
+- **👗 Visual Wardrobe**: Digital closet management with category filtering, color tagging, and stats.
+- **🧠 Style Profile**: Customizes results based on body type, skin tone, and aesthetic preferences (e.g., Streetwear, Minimalist).
+- **📊 Insights Dashboard**: Analytics on your most worn items, color palette distribution, and style streaks.
 
 ---
+
+## 📱 App Screens
+
+### 1️⃣ Style Lab (AI Stylist)
+- Interactive 3-step flow: Occasion → Vibe → Custom Input.
+- Generates "Outfit Situations" with match scores and explanations.
+- Features a "Collage Mode" for result visualization.
+
+### 2️⃣ Profile & Settings
+- **New!** Appearance settings to toggle Light/Dark/System themes.
+- Skin tone and body type management.
 
 ### 3️⃣ Home Dashboard
-- Central hub to access wardrobe, profile, and style recommendations  
-
-<img width="1366" height="1014" alt="Home Dashboard" src="https://github.com/user-attachments/assets/43a2a21b-cdb2-4bd0-91d8-1c915db887c6" />
-
----
-
-### 4️⃣ Smart Wardrobe Management
-- Add shirts, pants, shoes, and accessories  
-- Visual wardrobe layout for easy browsing  
-- Designed to scale as your collection grows  
-
-<img width="1366" height="3248" alt="Wardrobe Management" src="https://github.com/user-attachments/assets/333b9e94-fcd9-4e2c-ab44-0602b3120997" />
-
----
-
-### 5️⃣ Outfit Style Output
-- Intelligent outfit pair suggestions  
-- Balanced color combinations  
-- Clear visual presentation of recommended looks  
-
-<img width="1366" height="1472" alt="Style Output" src="https://github.com/user-attachments/assets/9da1a452-fd94-47e7-971e-99b4c3fdf8d8" />
-
----
-
-### 6️⃣ User Profile
-- Stores user preferences and style choices  
-- Makes future recommendations more accurate  
-
-<img width="1366" height="1087" alt="User Profile" src="https://github.com/user-attachments/assets/e86fc16c-47f3-4c93-a19b-92dfd98f8ec3" />
-
----
-
-### 7️⃣ Style Insights
-- Gives feedback and insights on outfit choices  
-- Encourages better styling decisions over time  
-
-<img width="1366" height="1406" alt="Style Insights" src="https://github.com/user-attachments/assets/c3c745c6-5977-48a7-aa00-10291cb8713e" />
+- Daily "Weather Fit" recommendations.
+- Quick actions and wardrobe summary.
 
 ---
 
@@ -79,45 +40,43 @@ Style Stack is a personal AI-powered fashion stylist that helps users create bet
 ```sh
 git clone https://github.com/Sohith-Pothula/Style-Stack.git
 cd Style-Stack
-
-
-
-
 ```
-###2. Install dependencies & start the development server
-'''sh
+
+### 2. Install dependencies & start the development server
+```sh
 npm install
 npm run dev
-'''
+```
 
-3. Build for production:
+### 3. Build for production:
 ```sh
 npm run build
 npm run preview
 ```
 
-## Technologies
+---
 
-- Vite
-- TypeScript
-- React
-- Tailwind CSS
-- shadcn-ui
+## 🛠️ Technologies
 
-## Deployment
-
-You can deploy this app on Vercel, Netlify, or any static-hosting provider. Build with `npm run build` and follow your provider's instructions.
+- **Frontend**: React, TypeScript, Vite
+- **Styling**: Tailwind CSS, CSS Modules (Custom Tokens)
+- **State Management**: Zustand (with local persistence)
+- **UI Components**: shadcn/ui, Framer Motion (Animations), Lucide React (Icons)
+- **Design System**: Glassmorphism, Neon Gradients, Responsive layouts
 
 ---
 
-## 🔮 Future Improvements
+## 🔮 Roadmap
 
-- AI-based outfit recommendations
-- Image-based clothing detection
-- Occasion & weather-based styling
-- User authentication and cloud wardrobe sync
-- Shopping suggestions for missing items
+- [x] Dark/Light Mode
+- [x] Basic Wardrobe Management
+- [x] Outfit Generation Logic
+- [ ] Drag-and-drop Outfit Builder
+- [ ] Weather API Integration
+- [ ] Social Sharing (OOTD)
+- [ ] Cloud Sync & Auth
 
+---
 
 ## 👨‍💻 Author
 

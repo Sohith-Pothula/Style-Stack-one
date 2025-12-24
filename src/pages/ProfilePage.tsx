@@ -1,17 +1,20 @@
 import { motion } from 'framer-motion';
 import { useStore } from '@/store/useStore';
 import { Button } from '@/components/ui/button';
-import { 
-  User, 
-  Settings, 
-  Bell, 
-  Palette, 
-  Shield, 
+import {
+  User,
+  Settings,
+  Bell,
+  Palette,
+  Shield,
   HelpCircle,
   LogOut,
   ChevronRight,
   Edit2,
-  Camera
+  Camera,
+  Moon,
+  Sun,
+  Monitor
 } from 'lucide-react';
 
 const container = {
@@ -35,7 +38,7 @@ const menuItems = [
 ];
 
 export const ProfilePage = () => {
-  const { user, wardrobe, savedOutfits, logout } = useStore();
+  const { user, wardrobe, savedOutfits, logout, theme, setTheme } = useStore();
 
   const skinToneColors: Record<string, string> = {
     fair: '#FFE4C4',
@@ -102,6 +105,29 @@ export const ProfilePage = () => {
         </div>
       </motion.div>
 
+      {/* Theme Switching */}
+      <motion.div variants={item} className="px-6 mb-6">
+        <h3 className="font-semibold mb-4">Appearance</h3>
+        <div className="glass-card p-2 rounded-2xl flex">
+          {[
+            { name: 'light', icon: Sun, label: 'Light' },
+            { name: 'dark', icon: Moon, label: 'Dark' },
+            { name: 'system', icon: Monitor, label: 'System' }
+          ].map((t) => (
+            <button
+              key={t.name}
+              onClick={() => setTheme(t.name as any)}
+              className={`flex-1 flex flex-col items-center gap-2 py-3 rounded-xl transition-all ${theme === t.name
+                ? 'bg-secondary text-primary shadow-sm'
+                : 'text-muted-foreground hover:bg-secondary/50'}`}
+            >
+              <t.icon className="w-5 h-5" />
+              <span className="text-xs font-medium">{t.label}</span>
+            </button>
+          ))}
+        </div>
+      </motion.div>
+
       {/* Style Profile */}
       <motion.div variants={item} className="px-6 mb-6">
         <h3 className="font-semibold mb-4">Your Style DNA</h3>
@@ -113,7 +139,7 @@ export const ProfilePage = () => {
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">Skin Tone</span>
             <div className="flex items-center gap-2">
-              <div 
+              <div
                 className="w-5 h-5 rounded-full border border-border"
                 style={{ backgroundColor: skinToneColors[user?.skinTone || 'medium'] }}
               />
@@ -140,9 +166,8 @@ export const ProfilePage = () => {
           {menuItems.map((menuItem, index) => (
             <button
               key={menuItem.label}
-              className={`w-full flex items-center gap-4 p-4 hover:bg-secondary/50 transition-colors ${
-                index < menuItems.length - 1 ? 'border-b border-border' : ''
-              }`}
+              className={`w-full flex items-center gap-4 p-4 hover:bg-secondary/50 transition-colors ${index < menuItems.length - 1 ? 'border-b border-border' : ''
+                }`}
             >
               <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center">
                 <menuItem.icon className="w-5 h-5 text-muted-foreground" />

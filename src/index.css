@@ -6,59 +6,107 @@
 
 @layer base {
   :root {
-    --background: 260 20% 6%;
-    --foreground: 0 0% 98%;
+    /* 
+      LIGHT MODE (Defaults) 
+      Clean, professional daytime experience.
+    */
+    --background: 220 33% 98%;
+    /* #F6F7FB */
+    --foreground: 222 47% 11%;
+    /* Charcoal for text */
 
-    --card: 260 15% 10%;
-    --card-foreground: 0 0% 98%;
+    --card: 0 0% 100%;
+    /* White cards */
+    --card-foreground: 222 47% 11%;
 
-    --popover: 260 15% 10%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 270 100% 65%;
+    /* Muted Gradient Primary for Light Mode */
+    --primary: 270 60% 55%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 260 15% 15%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 220 14% 96%;
+    /* Light grey for buttons/bg */
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 260 10% 20%;
-    --muted-foreground: 260 10% 60%;
+    --muted: 220 14% 93%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 330 100% 65%;
+    --accent: 320 60% 55%;
     --accent-foreground: 0 0% 100%;
 
-    --success: 150 80% 50%;
-    --success-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --warning: 45 100% 60%;
-    --warning-foreground: 0 0% 10%;
-
-    --destructive: 0 80% 60%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 260 15% 18%;
-    --input: 260 15% 18%;
-    --ring: 270 100% 65%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 270 60% 55%;
 
     --radius: 1rem;
 
-    /* Custom tokens */
-    --gradient-primary: linear-gradient(135deg, hsl(270 100% 65%) 0%, hsl(330 100% 65%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(260 15% 12%) 0%, hsl(260 20% 6%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(260 15% 12%) 0%, hsl(260 15% 8%) 100%);
-    --gradient-glow: radial-gradient(circle at center, hsl(270 100% 65% / 0.3) 0%, transparent 70%);
-    
-    --shadow-glow: 0 0 40px hsl(270 100% 65% / 0.3);
-    --shadow-card: 0 8px 32px hsl(260 20% 4% / 0.5);
-    --shadow-elevated: 0 20px 60px hsl(260 20% 4% / 0.6);
+    /* Custom Design Tokens - Light Mode */
+    --gradient-primary: linear-gradient(135deg, hsl(270 60% 55%) 0%, hsl(320 60% 55%) 100%);
+    --gradient-surface: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(220 33% 98%) 100%);
 
-    --glass-bg: hsl(260 15% 10% / 0.8);
-    --glass-border: hsl(0 0% 100% / 0.1);
+    /* Subtle shadows for light mode */
+    --glass-bg: hsl(0 0% 100% / 0.85);
+    /* Less transparent in light mode */
+    --glass-border: hsl(220 13% 91% / 0.8);
+
+    --shadow-soft: 0 4px 20px -4px rgba(0, 0, 0, 0.05);
+    /* Gentle shadow */
+    --shadow-glow: 0 4px 12px rgba(120, 50, 200, 0.15);
+    /* Subtle color shadow */
   }
 
   .dark {
-    --background: 260 20% 6%;
-    --foreground: 0 0% 98%;
+    /* 
+      DARK MODE 
+      Premium, eye-comfortable night experience.
+    */
+    --background: 260 30% 5%;
+    /* Near-black gradient base */
+    --foreground: 260 10% 98%;
+
+    --card: 260 25% 8%;
+    /* Deep charcoal */
+    --card-foreground: 260 10% 98%;
+
+    --popover: 260 25% 8%;
+    --popover-foreground: 260 10% 98%;
+
+    /* Neon Purple Primary */
+    --primary: 270 100% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 260 20% 12%;
+    --secondary-foreground: 260 10% 90%;
+
+    --muted: 260 20% 15%;
+    --muted-foreground: 260 10% 65%;
+
+    /* Neon Pink Accent */
+    --accent: 320 100% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 260 20% 15%;
+    --input: 260 20% 15%;
+    --ring: 270 100% 60%;
+
+    /* Custom Design Tokens - Dark Mode */
+    --gradient-primary: linear-gradient(135deg, hsl(270 100% 65%) 0%, hsl(320 100% 65%) 100%);
+    --gradient-surface: linear-gradient(180deg, hsl(260 25% 10%) 0%, hsl(260 30% 6%) 100%);
+
+    /* Stronger glass effect and glows in dark mode */
+    --glass-bg: hsl(260 25% 8% / 0.7);
+    --glass-border: hsl(260 20% 100% / 0.08);
+
+    --shadow-soft: 0 8px 32px -8px hsl(260 50% 5% / 0.5);
+    --shadow-glow: 0 0 20px hsl(270 100% 60% / 0.15);
   }
 }
 
@@ -70,25 +118,43 @@
   html {
     font-family: 'Outfit', sans-serif;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
-    @apply bg-background text-foreground;
-    background: linear-gradient(180deg, hsl(260 20% 8%) 0%, hsl(260 20% 4%) 100%);
-    min-height: 100vh;
-    overflow-x: hidden;
+    @apply bg-background text-foreground selection:bg-primary/30 transition-colors duration-300;
+  }
+
+  /* Decorative Backgrounds handled via classes mostly, but we can set base styles */
+  .dark body {
+    background-image:
+      radial-gradient(circle at 15% 50%, hsl(270 100% 60% / 0.08), transparent 25%),
+      radial-gradient(circle at 85% 30%, hsl(320 100% 60% / 0.08), transparent 25%);
+    background-attachment: fixed;
+  }
+
+  /* Less intrusive background for light mode */
+  body:not(.dark) {
+    background-image:
+      radial-gradient(circle at 20% 20%, hsl(270 60% 55% / 0.03), transparent 40%),
+      radial-gradient(circle at 80% 80%, hsl(320 60% 55% / 0.03), transparent 40%);
+    background-attachment: fixed;
   }
 }
 
 @layer components {
+
+  /* Modern Glass Card */
   .glass-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius);
+    @apply bg-card/80 backdrop-blur-md border border-border/50 shadow-sm transition-all duration-300;
   }
 
+  .dark .glass-card {
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
+    box-shadow: var(--shadow-soft);
+  }
+
+  /* Text Gradient */
   .gradient-text {
     background: var(--gradient-primary);
     -webkit-background-clip: text;
@@ -96,41 +162,41 @@
     background-clip: text;
   }
 
-  .gradient-border {
+  /* Gradient Border Container */
+  .gradient-border-container {
     position: relative;
-    background: var(--glass-bg);
+    background: var(--card);
     border-radius: var(--radius);
+    z-index: 1;
   }
 
-  .gradient-border::before {
-    content: '';
+  .gradient-border-container::before {
+    content: "";
     position: absolute;
-    inset: 0;
-    padding: 1px;
-    border-radius: inherit;
+    inset: -1px;
+    z-index: -1;
+    border-radius: calc(var(--radius) + 1px);
     background: var(--gradient-primary);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
+    opacity: 0.5;
   }
 
-  .glow-effect {
-    box-shadow: var(--shadow-glow);
+  /* Interactive Elements */
+  .card-hover {
+    @apply transition-all duration-300 hover:scale-[1.02] active:scale-[0.98];
   }
 
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
+  .btn-primary-glow {
+    @apply shadow-lg transition-shadow duration-300;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+    /* Subtle usage for light mode */
   }
 
-  .animate-pulse-glow {
-    animation: pulseGlow 2s ease-in-out infinite;
+  .dark .btn-primary-glow {
+    box-shadow: 0 0 20px hsl(270 100% 60% / 0.3);
   }
 
-  .animate-shimmer {
-    animation: shimmer 2s linear infinite;
-    background-size: 200% 100%;
+  .dark .btn-primary-glow:hover {
+    box-shadow: 0 0 30px hsl(270 100% 60% / 0.5);
   }
 }
 
@@ -139,39 +205,12 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-  
+
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
 
   .safe-bottom {
-    padding-bottom: env(safe-area-inset-bottom, 20px);
-  }
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes pulseGlow {
-  0%, 100% {
-    box-shadow: 0 0 20px hsl(270 100% 65% / 0.3);
-  }
-  50% {
-    box-shadow: 0 0 40px hsl(270 100% 65% / 0.5);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
+    padding-bottom: env(safe-area-inset-bottom, 24px);
   }
 }

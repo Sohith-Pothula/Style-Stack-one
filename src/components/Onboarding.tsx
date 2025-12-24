@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useStore } from '@/store/useStore';
 import { StylePreference } from '@/types';
-import { 
-  ChevronRight, 
+import {
+  ChevronRight,
   ChevronLeft,
   Sparkles,
   User,
@@ -48,16 +48,16 @@ const steps = [
 ];
 
 export const Onboarding = () => {
-  const { 
-    onboarding, 
-    setOnboardingStep, 
+  const {
+    onboarding,
+    setOnboardingStep,
     setOnboardingName,
     setOnboardingBodyType,
     setOnboardingSkinTone,
     toggleStylePreference,
-    completeOnboarding 
+    completeOnboarding
   } = useStore();
-  
+
   const [localName, setLocalName] = useState(onboarding.name);
 
   const canProceed = () => {
@@ -101,25 +101,35 @@ export const Onboarding = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      {/* Progress indicator */}
-      <div className="px-6 pt-12 pb-4">
-        <div className="flex gap-2">
-          {steps.map((_, index) => (
-            <div
-              key={index}
-              className={`h-1 flex-1 rounded-full transition-all duration-500 ${
-                index <= onboarding.step 
-                  ? 'bg-gradient-to-r from-primary to-accent' 
-                  : 'bg-muted'
-              }`}
-            />
-          ))}
+    <div className="min-h-screen flex flex-col bg-background relative overflow-hidden">
+      {/* Background blobs */}
+      <div className="fixed -top-40 -right-40 w-80 h-80 bg-primary/20 rounded-full blur-[100px] pointer-events-none" />
+      <div className="fixed -bottom-40 -left-40 w-80 h-80 bg-accent/20 rounded-full blur-[100px] pointer-events-none" />
+
+      {/* Header / Progress */}
+      <div className="px-6 pt-12 pb-4 z-10">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex gap-2">
+            {steps.map((_, index) => (
+              <motion.div
+                key={index}
+                initial={false}
+                animate={{
+                  width: index === onboarding.step ? 24 : 8,
+                  backgroundColor: index <= onboarding.step ? 'hsl(270 100% 60%)' : 'hsl(260 20% 20%)'
+                }}
+                className="h-2 rounded-full transition-all duration-300"
+              />
+            ))}
+          </div>
+          <span className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
+            Step {onboarding.step + 1}/{steps.length}
+          </span>
         </div>
       </div>
 
       {/* Content */}
-      <div className="flex-1 px-6 overflow-hidden">
+      <div className="flex-1 px-6 relative z-10 flex flex-col">
         <AnimatePresence mode="wait" custom={1}>
           {onboarding.step === 0 && (
             <motion.div
@@ -128,26 +138,24 @@ export const Onboarding = () => {
               initial="enter"
               animate="center"
               exit="exit"
-              custom={1}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="h-full flex flex-col justify-center items-center text-center"
+              className="flex-1 flex flex-col justify-center items-center text-center pb-20"
             >
               <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2, type: 'spring' }}
-                className="w-32 h-32 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-8 shadow-glow"
+                initial={{ scale: 0, rotate: -20 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: 'spring', damping: 15 }}
+                className="w-40 h-40 rounded-3xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-10 shadow-glow relative group"
               >
-                <Sparkles className="w-16 h-16 text-primary-foreground" />
+                <div className="absolute inset-0 bg-white/20 rounded-3xl blur-xl opacity-50 group-hover:opacity-75 transition-opacity" />
+                <Sparkles className="w-20 h-20 text-white relative z-10" />
               </motion.div>
-              <h1 className="text-4xl font-bold mb-4">
-                <span className="gradient-text">Style Stack</span>
+
+              <h1 className="text-5xl font-extrabold mb-6 tracking-tight">
+                Style <span className="gradient-text">Stack</span>
               </h1>
-              <p className="text-xl text-muted-foreground mb-2">
-                Your AI-powered fashion bestie ✨
-              </p>
-              <p className="text-muted-foreground max-w-xs">
-                Discover killer outfit combos from your own wardrobe. No judgment, just vibes.
+              <p className="text-xl text-muted-foreground max-w-xs mx-auto leading-relaxed">
+                Your personal AI stylist. <br />
+                Elevate your look, everyday.
               </p>
             </motion.div>
           )}
@@ -159,46 +167,51 @@ export const Onboarding = () => {
               initial="enter"
               animate="center"
               exit="exit"
-              custom={1}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="py-8"
+              className="py-4"
             >
-              <h2 className="text-2xl font-bold mb-2">Let's get to know you 👋</h2>
-              <p className="text-muted-foreground mb-8">
-                This helps us give you personalized style advice
+              <h2 className="text-3xl font-bold mb-3">About You</h2>
+              <p className="text-muted-foreground mb-10 text-lg">
+                Let's customize your profile.
               </p>
 
-              <div className="space-y-6">
+              <div className="space-y-8">
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground mb-2 block">
-                    What should we call you?
+                  <label className="text-sm font-semibold text-muted-foreground mb-3 block uppercase tracking-wider">
+                    Name
                   </label>
                   <input
                     type="text"
                     value={localName}
                     onChange={(e) => setLocalName(e.target.value)}
-                    placeholder="Your name"
-                    className="w-full h-14 px-4 rounded-xl bg-secondary border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-foreground placeholder:text-muted-foreground"
+                    placeholder="What should we call you?"
+                    className="w-full h-16 px-6 rounded-2xl bg-secondary/50 border border-border focus:border-primary focus:bg-secondary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-lg placeholder:text-muted-foreground/50"
+                    autoFocus
                   />
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground mb-3 block">
-                    Body type
+                  <label className="text-sm font-semibold text-muted-foreground mb-4 block uppercase tracking-wider">
+                    Body Type
                   </label>
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     {bodyTypes.map((type) => (
                       <button
                         key={type.value}
                         onClick={() => setOnboardingBodyType(type.value)}
-                        className={`p-4 rounded-xl border-2 transition-all duration-300 ${
-                          onboarding.bodyType === type.value
-                            ? 'border-primary bg-primary/10 shadow-glow'
-                            : 'border-border bg-secondary hover:border-primary/50'
-                        }`}
+                        className={`relative p-4 rounded-2xl border-2 transition-all duration-300 flex items-center gap-4 group ${onboarding.bodyType === type.value
+                            ? 'border-primary bg-primary/10 shadow-glow ring-1 ring-primary'
+                            : 'border-border bg-secondary/30 hover:bg-secondary hover:border-primary/30'
+                          }`}
                       >
-                        <span className="text-2xl block mb-1">{type.emoji}</span>
-                        <span className="text-sm font-medium">{type.label}</span>
+                        <span className="text-3xl bg-background rounded-xl p-2 shadow-sm">{type.emoji}</span>
+                        <span className={`font-semibold ${onboarding.bodyType === type.value ? 'text-primary' : 'text-foreground'}`}>
+                          {type.label}
+                        </span>
+                        {onboarding.bodyType === type.value && (
+                          <motion.div layoutId="check" className="absolute right-4 text-primary">
+                            <div className="w-2 h-2 rounded-full bg-primary" />
+                          </motion.div>
+                        )}
                       </button>
                     ))}
                   </div>
@@ -214,31 +227,34 @@ export const Onboarding = () => {
               initial="enter"
               animate="center"
               exit="exit"
-              custom={1}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="py-8"
+              className="py-4"
             >
-              <h2 className="text-2xl font-bold mb-2">Your skin tone 🎨</h2>
-              <p className="text-muted-foreground mb-8">
-                This helps us suggest colors that make you glow
+              <h2 className="text-3xl font-bold mb-3">Skin Tone</h2>
+              <p className="text-muted-foreground mb-10 text-lg">
+                For better color recommendations.
               </p>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 {skinTones.map((tone) => (
                   <button
                     key={tone.value}
                     onClick={() => setOnboardingSkinTone(tone.value)}
-                    className={`p-4 rounded-xl border-2 transition-all duration-300 ${
-                      onboarding.skinTone === tone.value
-                        ? 'border-primary shadow-glow'
-                        : 'border-border hover:border-primary/50'
-                    }`}
+                    className={`relative overflow-hidden p-1 rounded-2xl border-2 transition-all duration-300 card-hover ${onboarding.skinTone === tone.value
+                        ? 'border-primary ring-2 ring-primary/20 shadow-glow'
+                        : 'border-transparent bg-secondary/30 hover:border-border'
+                      }`}
                   >
-                    <div
-                      className="w-12 h-12 rounded-full mx-auto mb-2 border-2 border-border/50"
-                      style={{ backgroundColor: tone.color }}
-                    />
-                    <span className="text-sm font-medium">{tone.label}</span>
+                    <div className="relative z-10 bg-card rounded-xl p-4 flex items-center gap-4 h-full">
+                      <div
+                        className="w-12 h-12 rounded-full shadow-inner ring-2 ring-white/10"
+                        style={{ backgroundColor: tone.color }}
+                      />
+                      <span className="font-semibold">{tone.label}</span>
+                    </div>
+                    {/* Gradient background for selected state */}
+                    {onboarding.skinTone === tone.value && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 z-0" />
+                    )}
                   </button>
                 ))}
               </div>
@@ -252,30 +268,39 @@ export const Onboarding = () => {
               initial="enter"
               animate="center"
               exit="exit"
-              custom={1}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="py-8"
+              className="py-4"
             >
-              <h2 className="text-2xl font-bold mb-2">Your vibe ✨</h2>
-              <p className="text-muted-foreground mb-8">
-                Pick all that feel like you (at least one)
+              <h2 className="text-3xl font-bold mb-3">Your Vibe</h2>
+              <p className="text-muted-foreground mb-10 text-lg">
+                Select styles you relate to.
               </p>
 
               <div className="grid grid-cols-2 gap-3">
-                {stylePreferences.map((style) => (
-                  <button
-                    key={style.value}
-                    onClick={() => toggleStylePreference(style.value)}
-                    className={`p-4 rounded-xl border-2 transition-all duration-300 text-left ${
-                      onboarding.stylePreferences.includes(style.value)
-                        ? 'border-primary bg-primary/10 shadow-glow'
-                        : 'border-border bg-secondary hover:border-primary/50'
-                    }`}
-                  >
-                    <span className="text-2xl block mb-1">{style.emoji}</span>
-                    <span className="font-medium">{style.label}</span>
-                  </button>
-                ))}
+                {stylePreferences.map((style) => {
+                  const isSelected = onboarding.stylePreferences.includes(style.value);
+                  return (
+                    <button
+                      key={style.value}
+                      onClick={() => toggleStylePreference(style.value)}
+                      className={`p-4 rounded-2xl border-2 transition-all duration-300 text-left relative overflow-hidden ${isSelected
+                          ? 'border-primary bg-primary/10 shadow-glow'
+                          : 'border-border bg-secondary/30 hover:bg-secondary hover:border-primary/30'
+                        }`}
+                    >
+                      <div className="flex flex-col gap-2 relative z-10">
+                        <span className="text-3xl">{style.emoji}</span>
+                        <span className={`font-semibold ${isSelected ? 'text-primary' : 'text-foreground'}`}>
+                          {style.label}
+                        </span>
+                      </div>
+                      {isSelected && (
+                        <div className="absolute top-0 right-0 p-3">
+                          <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_currentColor]" />
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             </motion.div>
           )}
@@ -283,28 +308,30 @@ export const Onboarding = () => {
       </div>
 
       {/* Navigation */}
-      <div className="px-6 py-8 flex gap-3">
-        {onboarding.step > 0 && (
+      <div className="p-6 pb-8 z-10 bg-background/80 backdrop-blur-lg border-t border-border/50">
+        <div className="flex gap-4">
+          {onboarding.step > 0 && (
+            <Button
+              variant="outline"
+              size="xl"
+              onClick={handleBack}
+              className="flex-1 rounded-2xl border-2 hover:bg-secondary"
+            >
+              <ChevronLeft className="w-5 h-5 mr-2" />
+              Back
+            </Button>
+          )}
           <Button
-            variant="outline"
-            size="lg"
-            onClick={handleBack}
-            className="flex-1"
+            variant="gradient"
+            size="xl"
+            onClick={handleNext}
+            disabled={!canProceed()}
+            className="flex-[2] rounded-2xl shadow-glow font-semibold text-lg"
           >
-            <ChevronLeft className="w-5 h-5" />
-            Back
+            {onboarding.step === 3 ? "Start Styling" : 'Continue'}
+            {onboarding.step < 3 && <ChevronRight className="w-5 h-5 ml-2" />}
           </Button>
-        )}
-        <Button
-          variant="gradient"
-          size="lg"
-          onClick={handleNext}
-          disabled={!canProceed()}
-          className="flex-1"
-        >
-          {onboarding.step === 3 ? "Let's go!" : 'Continue'}
-          {onboarding.step < 3 && <ChevronRight className="w-5 h-5" />}
-        </Button>
+        </div>
       </div>
     </div>
   );

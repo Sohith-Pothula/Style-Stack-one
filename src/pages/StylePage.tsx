@@ -13,12 +13,12 @@ import {
   X,
   Sun,
   Cloud,
-  CloudRain,
-  Snowflake,
   ChevronRight,
   ThumbsUp,
   ThumbsDown,
-  Info
+  Info,
+  Thermometer,
+  Wind
 } from 'lucide-react';
 
 const occasions: { value: Occasion; label: string; emoji: string }[] = [
@@ -35,6 +35,13 @@ const moods = [
   { value: 'minimal', label: 'Minimal', emoji: '✨' },
   { value: 'classic', label: 'Classic', emoji: '👔' },
   { value: 'sporty', label: 'Sporty', emoji: '🏃' },
+];
+
+const matchExplanation = [
+  "This combo hits different! The colors align perfectly.",
+  "Going for that vibe? This outfit has you covered.",
+  "These pieces create a cohesive look for the occasion.",
+  "Love how these styles blend together. A solid choice.",
 ];
 
 // Simple outfit matching algorithm
@@ -106,13 +113,7 @@ const generateOutfit = (wardrobe: ClothingItem[], occasion: Occasion, mood: stri
   if (customInput.trim() && selectedItems.some(i => preferredItems.has(i.id))) {
     explanation = `Curated this look based on your request: "${customInput}". It fits the ${occasion} vibe perfectly!`;
   } else {
-    const explanations = [
-      `This combo hits different for ${occasion}! The colors complement each other perfectly.`,
-      `Going for that ${mood} vibe? This outfit's got you covered.`,
-      `These pieces create a cohesive look that's perfect for any ${occasion} situation.`,
-      `Love how these colors work together! Great choice for a ${mood} aesthetic.`,
-    ];
-    explanation = explanations[Math.floor(Math.random() * explanations.length)];
+    explanation = matchExplanation[Math.floor(Math.random() * matchExplanation.length)];
   }
 
   return {
@@ -162,118 +163,119 @@ export const StylePage = () => {
   };
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-28 relative">
+      {/* Ambient Backlight */}
+      <div className="fixed top-20 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] pointer-events-none" />
+
       {/* Header */}
-      <div className="px-6 pt-12 pb-6">
-        <h1 className="text-3xl font-bold mb-1">
-          <span className="gradient-text">Style Lab</span>
-        </h1>
-        <p className="text-muted-foreground">
-          Your AI styling assistant
-        </p>
-      </div>
+      <div className="px-6 pt-12 pb-6 relative z-10 flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight mb-1">
+            Style <span className="gradient-text">Lab</span>
+          </h1>
+          <p className="text-muted-foreground font-medium">Create your look</p>
+        </div>
 
-      {/* Weather Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="px-6 mb-6"
-      >
-        <div className="glass-card p-4 rounded-2xl flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
-            <Sun className="w-6 h-6 text-primary-foreground" />
+        {/* Compact Weather Badge */}
+        <div className="rounded-2xl bg-secondary/50 border border-border/50 p-2 flex items-center gap-3 backdrop-blur-md">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-sm">
+            <Sun className="w-4 h-4 text-white" />
           </div>
-          <div className="flex-1">
-            <p className="text-sm text-muted-foreground">Today's weather</p>
-            <p className="font-semibold">24°C, Sunny</p>
+          <div className="pr-1">
+            <p className="text-xs font-bold leading-none">24°</p>
+            <p className="text-[10px] text-muted-foreground leading-none mt-0.5">Sunny</p>
           </div>
-          <span className="text-sm text-muted-foreground">Perfect for light layers</span>
-        </div>
-      </motion.div>
-
-      {/* Occasion Selector */}
-      <div className="px-6 mb-6">
-        <h3 className="text-sm font-medium text-muted-foreground mb-3">What's the occasion?</h3>
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-6 px-6 pb-2">
-          {occasions.map((occasion) => (
-            <button
-              key={occasion.value}
-              onClick={() => setSelectedOccasion(occasion.value)}
-              className={`flex-shrink-0 px-4 py-3 rounded-2xl text-sm font-medium transition-all flex items-center gap-2 ${selectedOccasion === occasion.value
-                ? 'bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-glow'
-                : 'bg-secondary text-muted-foreground hover:text-foreground'
-                }`}
-            >
-              <span>{occasion.emoji}</span>
-              {occasion.label}
-            </button>
-          ))}
         </div>
       </div>
 
-      {/* Mood Selector */}
-      <div className="px-6 mb-8">
-        <h3 className="text-sm font-medium text-muted-foreground mb-3">What's your vibe?</h3>
-        <div className="grid grid-cols-4 gap-2">
-          {moods.map((mood) => (
-            <button
-              key={mood.value}
-              onClick={() => setSelectedMood(mood.value)}
-              className={`p-3 rounded-xl border-2 transition-all text-center ${selectedMood === mood.value
-                ? 'border-primary bg-primary/10'
-                : 'border-border bg-secondary'
-                }`}
-            >
-              <span className="text-xl block mb-1">{mood.emoji}</span>
-              <span className="text-xs">{mood.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Generate Button */}
+      {/* Main Flow */}
       {!showOutfit && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="px-6 mb-8"
+          className="relative z-10"
         >
-          <div className="mb-4">
-            <Label className="text-sm font-medium text-muted-foreground mb-2 block">
-              Custom Input (Optional)
-            </Label>
+          {/* Step 1: Occasion */}
+          <div className="px-6 mb-8 text-center sm:text-left">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4">1. Select Occasion</h3>
+            <div className="flex gap-2.5 overflow-x-auto scrollbar-hide -mx-6 px-6 pb-2">
+              {occasions.map((occasion) => (
+                <button
+                  key={occasion.value}
+                  onClick={() => setSelectedOccasion(occasion.value)}
+                  className={`flex-shrink-0 px-4 py-3 rounded-2xl text-sm font-semibold transition-all flex flex-col items-center gap-1 min-w-[70px] border-2 ${selectedOccasion === occasion.value
+                    ? 'border-primary bg-primary/10 text-primary shadow-glow'
+                    : 'border-transparent bg-secondary text-muted-foreground hover:bg-secondary/80'
+                    }`}
+                >
+                  <span className="text-2xl">{occasion.emoji}</span>
+                  <span>{occasion.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Step 2: Vibe */}
+          <div className="px-6 mb-8">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4">2. Choose Vibe</h3>
+            <div className="grid grid-cols-2 gap-3">
+              {moods.map((mood) => (
+                <button
+                  key={mood.value}
+                  onClick={() => setSelectedMood(mood.value)}
+                  className={`p-4 rounded-2xl border-2 transition-all flex items-center justify-between group ${selectedMood === mood.value
+                    ? 'border-accent bg-accent/10 shadow-glow'
+                    : 'border-border bg-secondary/30 hover:bg-secondary'
+                    }`}
+                >
+                  <span className="text-sm font-semibold">{mood.label}</span>
+                  <span className="text-xl group-hover:scale-110 transition-transform">{mood.emoji}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Step 3: Custom Input */}
+          <div className="px-6 mb-8">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4">3. Add Detail (Optional)</h3>
             <Input
-              placeholder="E.g., I want a blue outfit..."
+              placeholder="E.g., I want to wear my blue jeans..."
               value={customInput}
               onChange={(e) => setCustomInput(e.target.value)}
-              className="bg-secondary/50 border-input focus:border-primary"
+              className="h-14 rounded-2xl bg-secondary/50 border-input focus:border-primary px-4 text-base"
             />
           </div>
 
-          <Button
-            variant="gradient"
-            size="xl"
-            className="w-full"
-            onClick={handleGenerate}
-            disabled={isGenerating || wardrobe.length < 2}
-          >
-            {isGenerating ? (
-              <>
-                <RefreshCw className="w-5 h-5 animate-spin" />
-                Creating magic...
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-5 h-5" />
-                Generate Outfit
-              </>
+          {/* CTA */}
+          <div className="px-6 pb-8">
+            <Button
+              variant="gradient"
+              size="xl"
+              className="w-full h-16 rounded-2xl text-lg font-bold shadow-lg shadow-primary/20"
+              onClick={handleGenerate}
+              disabled={isGenerating || wardrobe.length < 2}
+            >
+              {isGenerating ? (
+                <>
+                  <RefreshCw className="w-6 h-6 animate-spin mr-2" />
+                  Cooking up a fit...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-6 h-6 mr-2 animate-pulse" />
+                  Generate Outfit
+                </>
+              )}
+            </Button>
+
+            {wardrobe.length < 2 && (
+              <div className="mt-4 p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-center">
+                <p className="text-sm text-destructive font-medium">
+                  Your wardrobe is too empty! Add at least 2 items to start using the Style Lab.
+                </p>
+              </div>
             )}
-          </Button>
-          {wardrobe.length < 2 && (
-            <p className="text-sm text-muted-foreground text-center mt-3">
-              Add at least 2 items to your wardrobe to get recommendations
-            </p>
-          )}
+          </div>
         </motion.div>
       )}
 
@@ -281,121 +283,79 @@ export const StylePage = () => {
       <AnimatePresence>
         {showOutfit && currentOutfit && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            className="px-6"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            className="px-6 flex flex-col h-full"
           >
             {/* Match Score */}
-            <div className="text-center mb-6">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2, type: 'spring' }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 border border-primary/30"
-              >
-                <Sparkles className="w-4 h-4 text-primary" />
-                <span className="font-bold gradient-text">{currentOutfit.matchScore}% Match</span>
-              </motion.div>
+            <div className="flex justify-center mb-6">
+              <div className="px-6 py-2 rounded-full bg-gradient-to-r from-green-500/20 to-teal-500/20 border border-green-500/30 flex items-center gap-2 backdrop-blur-md">
+                <Sparkles className="w-4 h-4 text-green-400" />
+                <span className="font-bold text-green-400">{currentOutfit.matchScore}% Match</span>
+              </div>
             </div>
 
-            {/* Outfit Items Grid */}
-            <div className="glass-card rounded-2xl p-4 mb-4">
-              <div className="grid grid-cols-2 gap-3 mb-4">
-                {currentOutfit.items.map((item, index) => (
-                  <motion.div
-                    key={item.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 * index }}
-                    className="aspect-square rounded-xl overflow-hidden bg-secondary relative"
-                  >
-                    <img
-                      src={item.imageUrl}
-                      alt={item.name}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-background/80 to-transparent">
-                      <p className="text-xs font-medium truncate">{item.name}</p>
+            {/* Collage */}
+            <div className="glass-card rounded-[32px] p-2 mb-6 shadow-elevated">
+              <div className="grid grid-cols-2 gap-2">
+                {/* Main Items Larger */}
+                {currentOutfit.items.slice(0, 2).map((item, idx) => (
+                  <div key={item.id} className="aspect-[4/5] rounded-[24px] overflow-hidden bg-secondary relative">
+                    <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
+                      <span className="text-white text-xs font-semibold truncate w-full">{item.name}</span>
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
+              {currentOutfit.items.length > 2 && (
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  {currentOutfit.items.slice(2).map((item) => (
+                    <div key={item.id} className="aspect-square rounded-[24px] overflow-hidden bg-secondary relative">
+                      <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
 
-              {/* Explanation */}
-              <div className="flex items-start gap-3 p-3 rounded-xl bg-secondary/50">
-                <Info className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-muted-foreground">
-                  {currentOutfit.explanation}
+            {/* Explanation Bubble */}
+            <div className="mb-8 relative">
+              <div className="absolute top-0 left-6 -translate-y-1/2 w-4 h-4 bg-secondary rotate-45 border-l border-t border-border z-0"></div>
+              <div className="bg-secondary rounded-2xl p-4 border border-border relative z-10 shadow-sm">
+                <p className="text-sm font-medium leading-relaxed">
+                  "{currentOutfit.explanation}"
                 </p>
               </div>
             </div>
 
             {/* Actions */}
-            <div className="flex gap-4 justify-center">
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+            <div className="flex items-center justify-center gap-6 pb-8">
+              <button
                 onClick={handleDislike}
-                className="w-16 h-16 rounded-full bg-secondary border-2 border-border flex items-center justify-center"
+                className="w-16 h-16 rounded-full bg-card border-2 border-border shadow-soft flex items-center justify-center text-muted-foreground hover:border-destructive hover:text-destructive transition-colors group"
               >
-                <ThumbsDown className="w-6 h-6 text-muted-foreground" />
-              </motion.button>
+                <X className="w-8 h-8 group-hover:scale-110 transition-transform" />
+              </button>
 
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+              <button
                 onClick={handleGenerate}
-                className="w-16 h-16 rounded-full bg-secondary border-2 border-border flex items-center justify-center"
+                className="w-12 h-12 rounded-full bg-secondary border border-border flex items-center justify-center text-muted-foreground hover:rotate-180 transition-all"
               >
-                <RefreshCw className="w-6 h-6 text-muted-foreground" />
-              </motion.button>
+                <RefreshCw className="w-5 h-5" />
+              </button>
 
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+              <button
                 onClick={handleLike}
-                className="w-16 h-16 rounded-full bg-gradient-to-r from-primary to-accent flex items-center justify-center shadow-glow"
+                className="w-16 h-16 rounded-full bg-gradient-to-tr from-primary to-accent shadow-glow flex items-center justify-center text-white hover:scale-105 transition-transform"
               >
-                <Heart className="w-6 h-6 text-primary-foreground" />
-              </motion.button>
+                <Heart className="w-8 h-8 fill-current" />
+              </button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Saved Outfits Preview */}
-      {savedOutfits.length > 0 && !showOutfit && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="px-6 mt-8"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold">Saved Outfits</h3>
-            <button className="text-primary text-sm font-medium flex items-center gap-1">
-              View all <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-          <div className="flex gap-3 overflow-x-auto scrollbar-hide -mx-6 px-6">
-            {savedOutfits.slice(0, 5).map((outfit) => (
-              <div key={outfit.id} className="flex-shrink-0 w-24">
-                <div className="aspect-square rounded-xl overflow-hidden bg-secondary mb-2 grid grid-cols-2 gap-0.5 p-0.5">
-                  {outfit.items.slice(0, 4).map((item) => (
-                    <img
-                      key={item.id}
-                      src={item.imageUrl}
-                      alt={item.name}
-                      className="w-full h-full object-cover rounded-sm"
-                    />
-                  ))}
-                </div>
-                <p className="text-xs text-muted-foreground text-center capitalize">{outfit.occasion}</p>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-      )}
     </div>
   );
 };

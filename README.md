@@ -66,20 +66,10 @@ npm run preview
 
 ---
 
-## 🔮 Roadmap
+### 👨‍💻 Author
 
-- [x] Dark/Light Mode
-- [x] Basic Wardrobe Management
-- [x] Outfit Generation Logic
-- [ ] Drag-and-drop Outfit Builder
-- [ ] Weather API Integration
-- [ ] Social Sharing (OOTD)
-- [ ] Cloud Sync & Auth
-
----
-
-## 👨‍💻 Author
-
-**Sohith Pothula**  
-B.Tech CSE (AI & ML)  
-Aspiring Data Scientist & Full Stack Developer
+##Team of Style Stack
+-Member 1: Badagala Shanmukha krishna murthy {24A51A42B4} 2nd year CSM-II
+-Member 2: Sohith Pothula {24A51A42B4} 2nd year CSM-II
+-Member 3: S.Yaswanth{24A51A42C2} 2nd year CSM-II
+-Member 4: Bhairaba Prasad Panda{24A51A42B4} 2nd year CSM-II

@@ -48,7 +48,7 @@ Style Stack is a lightweight web app that helps users manage their wardrobe and 
 1. Clone the repo:
 
 ```bash
-git clone <YOUR_GIT_URL>
+https://github.com/Sohith-Pothula/Style-Stack.git
 cd <YOUR_PROJECT_DIRECTORY>
 ```
 

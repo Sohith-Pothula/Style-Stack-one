@@ -67,7 +67,7 @@ Style Stack is a lightweight web app that helps users manage their wardrobe and 
 - Key libraries: framer-motion, lucide-react, recharts, sonner
 - Build tools: Vite (esbuild)
 - UI/UX: Google Stich
-- 
+  
 
 ---
 
